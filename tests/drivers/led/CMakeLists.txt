@@ -6,7 +6,7 @@ project(led_test)
 # Generate runner for the test
 test_runner_generate(src/led_test.c)
 
-set(ROOTDIR ../..)
+set(ROOTDIR ../../..)
 
 # Create mocks
 
