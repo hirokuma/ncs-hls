@@ -3,6 +3,7 @@
 
 #define LED_STATUS  (0)
 #define LED_CONN    (1)
+#define LED_CTRL    (2)
 
 int led_init(void);
 int led_set(int led, int onoff);
