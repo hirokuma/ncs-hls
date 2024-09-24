@@ -1,6 +1,5 @@
 #include <unity.h>
 
-#include "drivers/led.h"
 #include "cmock_gpio.h"
 
 #undef GPIO_DT_SPEC_GET

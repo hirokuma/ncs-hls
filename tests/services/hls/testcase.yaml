@@ -1,0 +1,7 @@
+tests:
+  unity.hls_test:
+    tags: hls_test
+    integration_platforms:
+      - native_sim_64
+    platform_allow:
+      - native_sim_64
