@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "ncs",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "configurationProvider": "nordic-semiconductor.nrf-connect"
+        }
+    ],
+    "version": 4
+}
