@@ -11,6 +11,7 @@ LOG_MODULE_DECLARE(ble_led, LOG_LEVEL_DBG);
 
 static bool m_led_state_notifiable;
 static bool m_led_onoff;
+static uint8_t m_read_count;
 
 static void _ccc_led_state_changed(const struct bt_gatt_attr *attr, uint16_t value);
 static ssize_t _set_led(
@@ -80,7 +81,7 @@ static ssize_t _set_led(
 
     if (len != 1) {
         LOG_ERR("invalid length: %d", len);
-        return -1;
+        return -EINVAL;
     }
     const uint8_t *data = (const uint8_t *)buf;
     LOG_DBG("buf[0]=0x%02x", data[0]);
@@ -101,6 +102,8 @@ static ssize_t _set_led(
     return ret;
 }
 
+// read callback function
+//  bufがcentralに返す値になる
 static ssize_t _read_led(
     struct bt_conn *conn,
     const struct bt_gatt_attr *attr,
@@ -109,15 +112,22 @@ static ssize_t _read_led(
     uint16_t offset
 )
 {
-    int ret;
-
-    const uint8_t *value = attr->user_data;
-    LOG_DBG("value[0]=0x%02x", *value);
-    ret = bt_gatt_attr_read(conn, attr, buf, len, offset, value, sizeof(*value));
-    if (ret != 0) {
-        LOG_ERR("fail bt_gatt_attr_read: %d", ret);
+    if ((attr == NULL) || (buf == NULL) || (len == 0) || (offset != 0)) {
+        return -EINVAL;
     }
-    return ret;
+
+    // conn, attr はおまけで、やってるのは memcpy(buf, (uint8_t *)value + offset, len)
+    //  lenは、buf_len か value_len の小さい方
+    ssize_t readlen = bt_gatt_attr_read(conn, attr, buf, len, offset, attr->user_data, sizeof(uint8_t));
+    if (readlen != sizeof(uint8_t)) {
+        LOG_ERR("fail bt_gatt_attr_read: %d", readlen);
+    }
+    uint8_t *v8 = (const uint8_t *)buf;
+    LOG_DBG("buf[0]=0x%02x", v8[0]);
+    v8[0] = ++m_read_count;
+    LOG_DBG("--> buf[0]=0x%02x", v8[0]);
+
+    return readlen;
 }
 
 int hls_init(void)

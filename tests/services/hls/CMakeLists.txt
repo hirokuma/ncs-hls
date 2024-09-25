@@ -9,8 +9,7 @@ test_runner_generate(src/hls_test.c)
 set(ROOTDIR ../../..)
 
 # Create mocks
-# cmock_handle(${ZEPHYR_BASE}/include/zephyr/bluetooth/bluetooth.h)
-# cmock_handle(${ZEPHYR_BASE}/include/zephyr/bluetooth/gatt.h)
+cmock_handle(src/gatt.h)
 cmock_handle(${ROOTDIR}/src/drivers/led.h)
 
 # add test file
